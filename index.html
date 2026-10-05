@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salary Split: plan your month before it starts</title>
+<meta name="description" content="Salary Split is a free tool for young professionals in India. Enter your take-home and five spending numbers, and get a plan for how much to save and how much is safe to spend.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%23e3e5eb'/%3E%3Cpath d='M6 1H4a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h2z' fill='%2314161a'/%3E%3Crect x='6' y='1' width='10' height='22' fill='%23eceef3'/%3E%3Cpath d='M16 1h4a3 3 0 0 1 3 3v16a3 3 0 0 1-3 3h-4z' fill='%231d3fd8'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #fbfbfc;
+    --ink: #14161a;
+    --muted: #5a5f6e;
+    --line: #e3e5eb;
+    --soft: #eceef3;
+    --accent: #1d3fd8;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-top: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  section { padding: 3.5rem 0; border-top: 1px solid var(--line); }
+  section.hero { border-top: 0; padding-top: 2.5rem; }
+
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0; }
+
+  h1 {
+    font-size: clamp(2rem, 7.5vw, 3.25rem);
+    font-weight: 750;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+
+  p { margin: 0 0 1.1rem; max-width: 34rem; }
+  .lead { font-size: 1.1875rem; }
+  .muted { color: var(--muted); }
+
+  /* The sample numbers: the one loud thing on the page */
+  .sample {
+    margin: 2rem 0 1.75rem;
+    padding: 1.5rem 0 0.5rem;
+    border-top: 2px solid var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .sample .intro { font-weight: 600; margin-bottom: 0.5rem; }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row:last-child { border-bottom: 0; }
+  .row .label { color: var(--muted); }
+  .row .amt { font-size: 1.5rem; font-weight: 700; white-space: nowrap; }
+  .row.free .label { color: var(--ink); font-weight: 600; }
+  .row.free .amt {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+  .row.free .note { display: block; margin-top: 0.35rem; font-size: 1rem; color: var(--muted); font-weight: 400; }
+
+  /* Steps */
+  ol.steps { list-style: none; margin: 2rem 0 0; padding: 0; }
+  ol.steps li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 0.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line);
+  }
+  ol.steps li:first-child { border-top: 0; padding-top: 0; }
+  .n {
+    font-size: 2.5rem;
+    font-weight: 750;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+  ol.steps h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; }
+  ol.steps p { margin-bottom: 0.6rem; }
+  ol.steps p:last-child { margin-bottom: 0; }
+
+  /* Split bar */
+  .bar {
+    display: flex;
+    height: 3.25rem;
+    margin: 2rem 0 0.75rem;
+    border-radius: 3px;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar > div {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .bar > div { min-width: 0; }
+  @media (max-width: 26rem) {
+    .bar > div {
+      justify-content: center;
+      padding: 0 0.25rem;
+      font-size: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+  }
+  .bar .b-save { flex: 13; background: var(--ink); color: #fff; }
+  .bar .b-fixed { flex: 30; background: var(--soft); color: var(--ink); }
+  .bar .b-free { flex: 22; background: var(--accent); color: #fff; }
+  .bar-key {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.9375rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .bar-key span::before {
+    content: "";
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-right: 0.45rem;
+    border-radius: 2px;
+    vertical-align: -0.05em;
+  }
+  .bar-key .k-save::before { background: var(--ink); }
+  .bar-key .k-fixed::before { background: var(--soft); border: 1px solid var(--line); }
+  .bar-key .k-free::before { background: var(--accent); }
+
+  .maths { font-variant-numeric: tabular-nums; }
+  .maths p { margin-bottom: 0.5rem; }
+
+  /* Lists */
+  ul.plain { margin: 0 0 1.25rem; padding: 0; list-style: none; max-width: 34rem; }
+  ul.plain li { padding: 0.9rem 0; border-top: 1px solid var(--line); }
+  ul.plain li:last-child { border-bottom: 1px solid var(--line); }
+  ul.plain strong { display: block; font-size: 1.125rem; margin-bottom: 0.15rem; }
+
+  .wont li strong::before { content: "No "; }
+
+  #try-it { padding: 3.5rem 0; }
+  #try-it p { font-size: 1.1875rem; margin: 0; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 2rem 0 3rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  footer p { margin: 0 0 0.25rem; }
+
+  @media (min-width: 40rem) {
+    body { font-size: 1.125rem; }
+    section { padding: 4.5rem 0; }
+    section.hero { padding-top: 4rem; }
+    ol.steps li { grid-template-columns: 4rem 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Salary Split logo: a square split into three blocks" xmlns="http://www.w3.org/2000/svg">
+      <title>Salary Split logo</title>
+      <rect width="24" height="24" rx="4" fill="#e3e5eb"/>
+      <path d="M6 1H4a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h2z" fill="#14161a"/>
+      <rect x="6" y="1" width="10" height="22" fill="#eceef3"/>
+      <path d="M16 1h4a3 3 0 0 1 3 3v16a3 3 0 0 1-3 3h-4z" fill="#1d3fd8"/>
+    </svg>
+    <span>Salary Split</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>Salary credited on the 1st. By the 18th, you're doing mental maths in the Swiggy checkout.</h1>
+
+      <p class="lead">Salary Split plans the month before it starts, not after it's gone. Most apps show where your money went. This one shows where it should go.</p>
+
+      <p>Enter your take-home, then rent, EMIs, food, transport and everything else. Rupees or percentages. No bank login, no tracking every expense.</p>
+
+      <div class="sample" aria-label="Example plan for a take-home of Rs 65,000">
+        <p class="intro">Take-home Rs 65,000:</p>
+        <div class="row">
+          <span class="label">Save</span>
+          <span class="amt">Rs 13,000</span>
+        </div>
+        <div class="row">
+          <span class="label">Fixed costs</span>
+          <span class="amt">Rs 30,000</span>
+        </div>
+        <div class="row free">
+          <span class="label">Free to spend<span class="note">about Rs 733 a day</span></span>
+          <span class="amt">Rs 22,000</span>
+        </div>
+      </div>
+
+      <p>It's free, and one screen, under a minute. <a href="#try-it">Try it with your real numbers.</a></p>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="wrap">
+      <h2>The problem</h2>
+      <p>The salary arrives, the rent and EMIs go out, and what is left gets spent one order at a time. Nobody decided how much of it was safe to spend. It just ran down until it ran out.</p>
+      <p>Tracking apps help after the fact. They are good at telling you where the money went, which is a little late when you are on the 18th and working out whether you can afford dinner.</p>
+      <p class="muted">The missing piece is a number you set at the start of the month: how much to lock away, and how much you are free to spend.</p>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p>Three steps, one screen, about 60 seconds.</p>
+      <ol class="steps">
+        <li>
+          <span class="n" aria-hidden="true">1</span>
+          <div>
+            <h3>Enter your take-home</h3>
+            <p>The amount that actually lands in your account. Switch between rupees and percentages whenever you like.</p>
+          </div>
+        </li>
+        <li>
+          <span class="n" aria-hidden="true">2</span>
+          <div>
+            <h3>Fill in five numbers</h3>
+            <p>Rent, EMIs, food, transport and everything else. Not sure of the exact figure? Put in a percentage instead.</p>
+            <p>Rent and EMIs are your fixed costs. Food, transport and everything else come out of your free to spend.</p>
+          </div>
+        </li>
+        <li>
+          <span class="n" aria-hidden="true">3</span>
+          <div>
+            <h3>Get your plan</h3>
+            <p>One screen shows what to save, your fixed costs, your free to spend number and what that comes to per day.</p>
+            <p>It also shows what you are saving today (your take-home minus those five numbers) against your target, so you can see whether you are on track or how much you are short.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="example">
+    <div class="wrap">
+      <h2>A worked example</h2>
+      <p>Take-home of Rs 65,000 a month.</p>
+
+      <div class="bar" role="img" aria-label="Rs 65,000 split into Rs 13,000 save, Rs 30,000 fixed costs and Rs 22,000 free to spend">
+        <div class="b-save">13,000</div>
+        <div class="b-fixed">30,000</div>
+        <div class="b-free">22,000</div>
+      </div>
+      <div class="bar-key" aria-hidden="true">
+        <span class="k-save">Save</span>
+        <span class="k-fixed">Fixed costs</span>
+        <span class="k-free">Free to spend</span>
+      </div>
+
+      <div class="maths">
+        <p>Savings come off the top: Rs 13,000.</p>
+        <p>Fixed costs are next: Rs 30,000.</p>
+        <p>Whatever remains is yours to spend: Rs 22,000, or about Rs 733 a day.</p>
+      </div>
+      <p>Fixed costs here are rent plus EMIs. Food, transport and everything else come out of the Rs 22,000.</p>
+      <p class="muted">The save figure comes from a 50/30/20-style benchmark, adjusted for metro rent.</p>
+    </div>
+  </section>
+
+  <section id="different">
+    <div class="wrap">
+      <h2>What makes it different</h2>
+      <p>The method is pay yourself first, in a fixed order. Savings, then fixed costs, then whatever is left. It is a plan, not a tracker.</p>
+      <ul class="plain">
+        <li>
+          <strong>It shows where money should go, not where it went.</strong>
+          Most apps look backwards. This one gives you the plan in under a minute, before you have spent anything.
+        </li>
+        <li>
+          <strong>No bank access, no logging, no dashboards.</strong>
+          Five numbers and a take-home figure. That is the whole input.
+        </li>
+        <li>
+          <strong>Rupees or percentages.</strong>
+          Do not know your exact numbers? Use percentages. That excuse is gone.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="wont">
+    <div class="wrap">
+      <h2>What it will not do</h2>
+      <ul class="plain wont">
+        <li>
+          <strong>bank login.</strong>
+          It never connects to your bank and never asks for access.
+        </li>
+        <li>
+          <strong>investment advice.</strong>
+          It tells you how much to lock away, not what to put it in.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="try-it">
+    <div class="wrap">
+      <p>The live tool is coming soon.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Salary Split</strong></p>
+    <p>A free personal finance tool for young professionals in India.</p>
+  </div>
+</footer>
+
+</body>
+</html>
