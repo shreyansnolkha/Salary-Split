@@ -189,7 +189,66 @@
   .wont li strong::before { content: "No "; }
 
   #try-it { padding: 3.5rem 0; }
-  #try-it p { font-size: 1.1875rem; margin: 0; }
+  #try-it .intro-line { font-size: 1.1875rem; margin: 0 0 1.5rem; }
+
+  /* The tool */
+  .plan-form { margin-top: 0.5rem; }
+  .field { margin-bottom: 1.1rem; }
+  .field label, .unit legend { display: block; font-weight: 600; margin-bottom: 0.35rem; padding: 0; }
+  .field input[type="text"] {
+    width: 100%;
+    font: inherit;
+    font-size: 1.125rem;
+    font-variant-numeric: tabular-nums;
+    padding: 0.7rem 0.8rem;
+    min-height: 3rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+  }
+  .field input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .field .conv { display: block; min-height: 1.4em; margin-top: 0.2rem; font-size: 0.9375rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .unit { border: 0; margin: 1.5rem 0 1rem; padding: 0; min-width: 0; }
+  .seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 3px; overflow: hidden; }
+  .seg label { position: relative; margin: 0; font-weight: 600; }
+  .seg input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .seg span { display: block; padding: 0.65rem 1.1rem; min-height: 2.75rem; background: #fff; color: var(--ink); }
+  .seg input:checked + span { background: var(--ink); color: #fff; }
+  .seg input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .grid { display: grid; gap: 0 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 40rem) { .grid { grid-template-columns: 1fr 1fr; } }
+  .go {
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 3px;
+    padding: 0.9rem 1.6rem;
+    min-height: 3rem;
+    cursor: pointer;
+  }
+  .go:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .go[disabled] { opacity: 0.65; cursor: progress; }
+  .msg { max-width: 34rem; margin: 1rem 0 0; padding-left: 0.9rem; border-left: 3px solid var(--ink); font-weight: 600; }
+  .msg:empty { display: none; }
+  #result { margin-top: 1rem; }
+  #result .sample { margin-top: 1.5rem; }
+  #result h3 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.5rem; }
+  .status { font-weight: 600; margin: 0.25rem 0 0; }
+  .left { font-size: 0.9375rem; color: var(--muted); }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 3rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+  .stats .num { display: block; font-size: 1.75rem; font-weight: 700; line-height: 1.1; }
+  .stats .cap { display: block; color: var(--muted); font-size: 0.9375rem; }
 
   footer {
     border-top: 1px solid var(--line);
@@ -358,7 +417,61 @@
 
   <section id="try-it">
     <div class="wrap">
-      <p>The live tool is coming soon.</p>
+      <h2>Try it with your numbers</h2>
+      <p class="intro-line">Type your monthly take-home and five costs. You get your plan in a few seconds.</p>
+
+      <form id="plan-form" class="plan-form" novalidate>
+        <div class="field">
+          <label for="f-take_home">Take-home pay per month (Rs)</label>
+          <input type="text" id="f-take_home" inputmode="numeric" autocomplete="off" placeholder="65,000">
+        </div>
+
+        <fieldset class="unit">
+          <legend>Enter the five costs as</legend>
+          <div class="seg">
+            <label><input type="radio" name="unit" value="rupees" checked><span>Rupees</span></label>
+            <label><input type="radio" name="unit" value="percent"><span>% of take-home</span></label>
+          </div>
+        </fieldset>
+
+        <div class="grid">
+          <div class="field">
+            <label for="f-rent" data-label="Rent">Rent (Rs per month)</label>
+            <input type="text" id="f-rent" inputmode="decimal" autocomplete="off" aria-describedby="c-rent">
+            <span class="conv" id="c-rent"></span>
+          </div>
+          <div class="field">
+            <label for="f-emis" data-label="EMIs">EMIs (Rs per month)</label>
+            <input type="text" id="f-emis" inputmode="decimal" autocomplete="off" aria-describedby="c-emis">
+            <span class="conv" id="c-emis"></span>
+          </div>
+          <div class="field">
+            <label for="f-food" data-label="Food">Food (Rs per month)</label>
+            <input type="text" id="f-food" inputmode="decimal" autocomplete="off" aria-describedby="c-food">
+            <span class="conv" id="c-food"></span>
+          </div>
+          <div class="field">
+            <label for="f-transport" data-label="Transport">Transport (Rs per month)</label>
+            <input type="text" id="f-transport" inputmode="decimal" autocomplete="off" aria-describedby="c-transport">
+            <span class="conv" id="c-transport"></span>
+          </div>
+          <div class="field">
+            <label for="f-other" data-label="Everything else">Everything else (Rs per month)</label>
+            <input type="text" id="f-other" inputmode="decimal" autocomplete="off" aria-describedby="c-other">
+            <span class="conv" id="c-other"></span>
+          </div>
+        </div>
+
+        <button type="submit" class="go" id="go">Get my plan</button>
+        <p class="msg" id="form-msg" role="alert"></p>
+      </form>
+
+      <div id="result" aria-live="polite"></div>
+
+      <div class="stats">
+        <div><span class="num" id="stat-plans">...</span><span class="cap">plans generated</span></div>
+        <div><span class="num" id="stat-avg">...</span><span class="cap">average saving identified per month</span></div>
+      </div>
     </div>
   </section>
 
@@ -370,6 +483,234 @@
     <p>A free personal finance tool for young professionals in India.</p>
   </div>
 </footer>
+
+
+<script>
+(function () {
+  'use strict';
+
+  var MAX_PLANS = 5;
+  var COSTS = ['rent', 'emis', 'food', 'transport', 'other'];
+  var form = document.getElementById('plan-form');
+  var goBtn = document.getElementById('go');
+  var msg = document.getElementById('form-msg');
+  var result = document.getElementById('result');
+  var takeHomeEl = document.getElementById('f-take_home');
+  var mode = 'rupees';
+
+  // ---- visitor id (random, kept in this browser) ----
+  function makeId() {
+    try {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      var a = new Uint8Array(16);
+      crypto.getRandomValues(a);
+      return Array.prototype.map.call(a, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+    } catch (e) {
+      var s = '';
+      while (s.length < 32) s += Math.random().toString(16).slice(2);
+      return s.slice(0, 32);
+    }
+  }
+  function getVisitorId() {
+    try {
+      var v = localStorage.getItem('salary_split_visitor');
+      if (v && /^[A-Za-z0-9_-]{16,64}$/.test(v)) return v;
+      v = makeId();
+      localStorage.setItem('salary_split_visitor', v);
+      return v;
+    } catch (e) {
+      return makeId();
+    }
+  }
+  var visitorId = getVisitorId();
+
+  // ---- helpers ----
+  function rs(n) { return 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+  function parseNum(s) {
+    var t = String(s).replace(/[,\s\u20B9%]|rs\.?/gi, '');
+    if (t === '' || !/^\d*\.?\d+$|^\d+\.?$/.test(t)) return NaN;
+    return Number(t);
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function field(name) { return document.getElementById('f-' + name); }
+
+  // ---- unit switch ----
+  function updateLabels() {
+    COSTS.forEach(function (name) {
+      var input = field(name);
+      var label = document.querySelector('label[for="f-' + name + '"]');
+      label.textContent = label.getAttribute('data-label') + (mode === 'rupees' ? ' (Rs per month)' : ' (% of take-home)');
+      input.placeholder = mode === 'rupees' ? '' : 'e.g. 30';
+    });
+    updateHints();
+  }
+  function updateHints() {
+    var th = parseNum(takeHomeEl.value);
+    COSTS.forEach(function (name) {
+      var hint = document.getElementById('c-' + name);
+      var v = parseNum(field(name).value);
+      if (mode === 'percent' && isFinite(th) && isFinite(v)) {
+        hint.textContent = '= ' + rs(th * v / 100);
+      } else {
+        hint.textContent = '';
+      }
+    });
+  }
+  function onUnitChange(newMode) {
+    if (newMode === mode) return;
+    var th = parseNum(takeHomeEl.value);
+    COSTS.forEach(function (name) {
+      var input = field(name);
+      var v = parseNum(input.value);
+      if (!isFinite(v) || !isFinite(th) || th <= 0) return;
+      if (newMode === 'percent') input.value = String(Math.round(v / th * 1000) / 10);
+      else input.value = String(Math.round(v / 100 * th));
+    });
+    mode = newMode;
+    updateLabels();
+  }
+  Array.prototype.forEach.call(form.querySelectorAll('input[name="unit"]'), function (r) {
+    r.addEventListener('change', function () { if (r.checked) onUnitChange(r.value); });
+  });
+  form.addEventListener('input', updateHints);
+
+  // ---- stats ----
+  function loadStats() {
+    fetch('/api/stats', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('bad'); return r.json(); })
+      .then(function (d) {
+        document.getElementById('stat-plans').textContent = Number(d.plans).toLocaleString('en-IN');
+        document.getElementById('stat-avg').textContent = rs(d.avg_saving);
+      })
+      .catch(function () {
+        document.getElementById('stat-plans').textContent = '-';
+        document.getElementById('stat-avg').textContent = '-';
+      });
+  }
+
+  // ---- rendering ----
+  function row(label, amt, extraClass, note) {
+    var r = el('div', 'row' + (extraClass ? ' ' + extraClass : ''));
+    var l = el('span', 'label', label);
+    if (note) { var n = el('span', 'note', note); l.appendChild(n); }
+    r.appendChild(l);
+    r.appendChild(el('span', 'amt', amt));
+    return r;
+  }
+
+  function render(d, remaining) {
+    var p = d.plan;
+    result.textContent = '';
+
+    var box = el('div', 'sample');
+    box.appendChild(el('p', 'intro', 'Your plan for take-home of ' + rs(p.take_home) + ':'));
+    box.appendChild(row('Save (20%)', rs(p.save_target)));
+    box.appendChild(row('Fixed costs', rs(p.fixed_costs)));
+    var freeNote = p.free_to_spend > 0 ? 'about ' + rs(p.per_day) + ' a day' : 'fixed costs and savings already use up everything';
+    box.appendChild(row('Free to spend', rs(Math.max(p.free_to_spend, 0)), 'free', freeNote));
+    result.appendChild(box);
+
+    result.appendChild(el('h3', null, 'Where you are today'));
+    result.appendChild(el('p', 'maths', 'Saving today: ' + rs(p.saving_today) + ' against a target of ' + rs(p.save_target) + '.'));
+    result.appendChild(el('p', 'status', p.on_track
+      ? 'On track. You are ' + rs(p.gap) + ' ahead of the target.'
+      : 'Short by ' + rs(p.gap) + ' a month.'));
+
+    var comp = el('p', 'muted');
+    var parts = p.categories.map(function (c) {
+      var base = c.label.charAt(0).toUpperCase() + c.label.slice(1) + ' ' + rs(c.amount);
+      return c.pct_of_free === null ? base : base + ' (' + c.pct_of_free + '% of free to spend)';
+    });
+    comp.textContent = parts.join(', ') + '. Together: ' + rs(p.variable_total) + ' against ' + rs(Math.max(p.free_to_spend, 0)) + ' free to spend.';
+    result.appendChild(comp);
+
+    if (d.cuts && d.cuts.length) {
+      result.appendChild(el('h3', null, p.on_track ? 'Two small trims for a bigger cushion' : 'Two cuts to close the gap'));
+      var ul = el('ul', 'plain');
+      d.cuts.forEach(function (c) {
+        var li = el('li');
+        li.appendChild(el('strong', null, 'Cut ' + rs(c.rupees_per_month) + ' from ' + c.label));
+        li.appendChild(document.createTextNode(c.how));
+        ul.appendChild(li);
+      });
+      result.appendChild(ul);
+    }
+
+    result.appendChild(el('p', null, d.summary));
+    result.appendChild(el('p', 'left', remaining + ' of ' + MAX_PLANS + ' free plans left on this browser.'));
+  }
+
+  // ---- submit ----
+  function fail(text) { msg.textContent = text; }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    msg.textContent = '';
+
+    var th = parseNum(takeHomeEl.value);
+    if (!isFinite(th) || th < 1000 || th > 5000000) {
+      fail('Enter your monthly take-home in rupees, between 1,000 and 50,00,000.');
+      takeHomeEl.focus();
+      return;
+    }
+
+    var payload = { visitor_id: visitorId, take_home: Math.round(th) };
+    for (var i = 0; i < COSTS.length; i++) {
+      var name = COSTS[i];
+      var v = parseNum(field(name).value);
+      var shown = document.querySelector('label[for="f-' + name + '"]').getAttribute('data-label');
+      if (!isFinite(v) || v < 0) {
+        fail('Enter a number for ' + shown.toLowerCase() + '. Use 0 if it does not apply.');
+        field(name).focus();
+        return;
+      }
+      if (mode === 'percent') {
+        if (v > 100) { fail(shown + ' cannot be more than 100%.'); field(name).focus(); return; }
+        v = v / 100 * th; // percentages become rupees here, before anything is sent
+      }
+      payload[name] = Math.round(v);
+    }
+
+    goBtn.disabled = true;
+    goBtn.textContent = 'Working on it...';
+
+    fetch('/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) { return { status: r.status, data: d }; });
+      })
+      .then(function (res) {
+        if (res.status === 200 && res.data && res.data.ok) {
+          render(res.data, res.data.remaining);
+          loadStats();
+        } else if (res.status === 429) {
+          result.textContent = '';
+          fail(res.data.message || 'You have used all your free plans on this browser.');
+        } else {
+          fail(res.data.message || 'Something went wrong. Please try again in a moment.');
+        }
+      })
+      .catch(function () {
+        fail('Could not reach the server. Check your connection and try again.');
+      })
+      .then(function () {
+        goBtn.disabled = false;
+        goBtn.textContent = 'Get my plan';
+      });
+  });
+
+  updateLabels();
+  loadStats();
+})();
+</script>
 
 </body>
 </html>
